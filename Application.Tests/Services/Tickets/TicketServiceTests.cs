@@ -1,7 +1,6 @@
 using Application.Services.Tickets;
 using Application.DTOs.Tickets;
 using Application.Interfaces.Tickets;
-using Application.Interfaces;
 using Application.Exceptions;
 using Domain.Entities;
 using Domain.Enums;
