@@ -200,100 +200,135 @@ Install the following:
 
 ---
 
-## 🔧 Backend Setup
+🔧 Backend Setup
+1. Navigate to Backend
 
-### 1. Navigate to Backend
-```bash
+Open a terminal and move into the Backend folder.
+Command to run:
 cd Backend
+
 2. Restore dependencies
-bash
-Copy code
+
+Restore all .NET dependencies for the backend project.
+Command to run:
 dotnet restore
+
 3. Configure database connection
-Update appsettings.json:
 
-json
-Copy code
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=SmartTicketDB;User Id=sa;Password=StrongPassword@123;TrustServerCertificate=True;"
-  }
-}
-4. Start SQL Server (Docker)
-bash
-Copy code
-docker run -e "ACCEPT_EULA=Y" \
--e "SA_PASSWORD=StrongPassword@123" \
--p 1433:1433 \
---name sqlserver \
--d mcr.microsoft.com/mssql/server:2022-latest
-5. Apply migrations
-bash
-Copy code
+Open the appsettings.json file in the Backend project and update the connection string with your local SQL Server details.
+
+Connection string example (edit values as needed):
+Server = localhost
+Database = SmartTicketDB
+User Id = sa
+Password = StrongPassword@123
+TrustServerCertificate = True
+
+Ensure SQL Server credentials match your local or Docker setup.
+
+4. Start SQL Server using Docker
+
+Run SQL Server in a Docker container if it is not already running.
+
+Key details:
+
+SQL Server image: SQL Server 2022
+
+Port: 1433
+
+Username: sa
+
+Password: StrongPassword@123
+
+Make sure Docker is running before executing the command.
+
+5. Apply database migrations
+
+Apply Entity Framework Core migrations to create all tables and seed required data.
+
+Command to run:
 dotnet ef database update
-6. Run backend
-bash
-Copy code
-dotnet run
-Backend URL:
 
-arduino
-Copy code
+6. Run the backend API
+
+Start the ASP.NET Core Web API.
+
+Command to run:
+dotnet run
+
+Backend will be available at:
 https://localhost:5001
+
 🎨 Frontend Setup
 1. Navigate to Frontend
-bash
-Copy code
+
+Open a new terminal and move into the Frontend folder.
+Command to run:
 cd Frontend
+
 2. Install dependencies
-bash
-Copy code
+
+Install all Angular and npm dependencies.
+Command to run:
 npm install
-3. Run application
-bash
-Copy code
+
+3. Run the Angular application
+
+Start the Angular development server.
+Command to run:
 ng serve
-Frontend URL:
 
-arduino
-Copy code
+Frontend will be available at:
 http://localhost:4200
+
 🔐 Authentication & Authorization
-JWT-based authentication
 
-Tokens sent via HTTP interceptor
+JWT-based authentication is implemented
 
-Angular route guards enforce role-based access
+Tokens are attached to requests using an Angular HTTP interceptor
 
-Backend endpoints secured using:
+Angular route guards enforce role-based navigation
 
-csharp
-Copy code
-[Authorize(Roles = "...")]
+Backend APIs are protected using role-based authorization attributes
+
+Supported roles:
+
+Admin
+
+Support Manager
+
+Support Agent
+
+End User
+
+Each role has controlled access to features and APIs.
+
 📌 Key Achievements
-Complete ticket lifecycle implementation
 
-Secure role-based access control
+Complete ticket lifecycle management (Create, Assign, In Progress, Resolve, Close, Reopen, Cancel)
 
-SLA tracking and escalation
+Role-based access control across frontend and backend
 
-Auto-assignment logic
+SLA tracking with breach detection
 
-Centralized activity audit trail
+Ticket escalation handling
 
-Clean and scalable architecture
+Automatic agent assignment based on workload
+
+Ticket activity audit trail for full traceability
+
+Clean layered architecture with separation of concerns
 
 🚧 Future Enhancements
-Email notifications
+
+Email notifications for ticket updates
 
 Real-time updates using SignalR
 
-Advanced reporting dashboards
+Advanced reporting and analytics dashboards
 
-Multi-tenant support
+Multi-tenant architecture support
 
 📄 License
-This project was developed as an academic capstone project.
 
-markdown
-Copy code
+This project was developed as an academic capstone project and is intended for educational and demonstration purposes only.
