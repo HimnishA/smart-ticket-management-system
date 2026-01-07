@@ -1,0 +1,221 @@
+<div class="ticket-details-container">
+  <!-- LOADING STATE -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="loading-spinner"></div>
+    <p>Loading ticket details...</p>
+  </div>
+
+
+
+  <!-- TICKET DETAILS -->
+  <div class="ticket-details" *ngIf="!loading && ticket">
+    <!-- HEADER -->
+    <div class="ticket-header">
+      <div class="header-content">
+        <div class="ticket-id">Ticket #{{ ticket?.ticketId }}</div>
+        <h1 class="ticket-title">{{ ticket?.title }}</h1>
+      </div>
+    </div>
+
+    <!-- TICKET INFO CARD -->
+    <div class="ticket-info-card">
+      <div class="section-header">
+        <h3 class="section-title">Ticket Information</h3>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <label class="info-label">Status</label>
+          <span class="status-badge" [class]="getStatusClass(ticket?.status)">
+            {{ ticket?.status }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <label class="info-label">Priority</label>
+          <span class="priority-badge" [class]="getPriorityClass(ticket?.priority)">
+            {{ ticket?.priority }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <label class="info-label">Category</label>
+          <span class="category-badge">{{ ticket?.category }}</span>
+        </div>
+
+        <div class="info-item assigned-to-item">
+          <label class="info-label">Assigned To</label>
+
+          <!-- Assigned user row -->
+          <div class="assignee-info-row">
+            <div class="assignee-info">
+              <span *ngIf="ticket?.assignedToName" class="assignee-name">
+                <span class="user-icon">👤</span>
+                {{ ticket?.assignedToName }}
+              </span>
+
+              <span *ngIf="!ticket?.assignedToName" class="unassigned">
+                <span class="unassigned-icon">⏸️</span>
+                Unassigned
+              </span>
+            </div>
+          </div>
+
+          <!-- ================= AGENT STATUS UPDATE ================= -->
+        <div
+          class="agent-status-update"
+          *ngIf="userRole === 'SupportAgent'">
+
+          <label class="info-label">Update Status</label>
+
+          <select
+            #statusSelect
+            class="status-select"
+            [disabled]="getAllowedNextStatuses(ticket?.status).length === 0"
+            (change)="updateStatus(statusSelect.value)">
+
+            <!-- Placeholder -->
+            <option value="" disabled selected>
+              Select next status
+            </option>
+
+            <!-- Allowed next statuses -->
+            <option
+              *ngFor="let s of getAllowedNextStatuses(ticket?.status)"
+              [value]="s">
+              {{ s }}
+            </option>
+
+          </select>
+
+        </div>
+
+
+          <!-- ================= ACTION BUTTONS (BELOW ASSIGNED TO) ================= -->
+
+          <!-- CANCEL (EndUser only) -->
+          <button
+            *ngIf="userRole === 'EndUser' && ['Created','Assigned','InProgress'].includes(ticket?.status)"
+            class="danger-btn below-assignee"
+            (click)="cancelTicket()">
+            ❌ Cancel Ticket
+          </button>
+
+          <!-- REOPEN (EndUser only) -->
+          <button
+            *ngIf="userRole === 'EndUser' && ['Resolved','Closed'].includes(ticket?.status)"
+            class="primary-btn below-assignee"
+            (click)="reopenTicket()">
+            🔁 Reopen Ticket
+          </button>
+
+          <!-- ESCALATE (EndUser only, optional – if already implemented) -->
+          <button
+            *ngIf="userRole === 'EndUser' && !ticket?.isEscalated"
+            class="escalate-btn below-assignee"
+            (click)="escalate()">
+            🚨 Escalate Ticket
+          </button>
+
+          <!-- ESCALATION BANNER (ALL ROLES SEE) -->
+          <div *ngIf="ticket?.isEscalated" class="escalation-banner below-assignee">
+            🚨 Escalated on {{ ticket?.escalatedAt | date:'short' }}
+          </div>
+        </div>
+
+              </div>
+    </div>
+
+    <!-- COMMENTS SECTION -->
+    <div class="comments-section">
+      <div class="section-header">
+        <h3 class="section-title">Comments</h3>
+        <span class="comment-count" *ngIf="comments.length > 0">{{ comments.length }} comment{{ comments.length !== 1 ?
+          's' : '' }}</span>
+      </div>
+
+      <!-- COMMENTS LIST -->
+      <div class="comments-list" *ngIf="comments.length > 0; else noComments">
+        <div class="comment-card" *ngFor="let c of comments">
+          <div class="comment-header">
+            <div class="comment-author">
+              <span class="author-icon">👤</span>
+              <span class="author-name">{{ c.name }}</span>
+            </div>
+            <div class="comment-date">
+              {{ c.createdAt | date:'medium' }}
+            </div>
+          </div>
+          <div class="comment-body">
+            {{ c.comment }}
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noComments>
+        <div class="empty-comments">
+          <div class="empty-icon">💬</div>
+          <p class="empty-text">No comments yet. Be the first to add one!</p>
+        </div>
+      </ng-template>
+
+      <!-- ADD COMMENT FORM -->
+      <div class="add-comment-card" >
+        <h4 class="add-comment-title">Add a Comment</h4>
+        <div class="comment-form">
+          <textarea [(ngModel)]="newComment" placeholder="Write your comment here..." rows="4" class="comment-textarea">
+          </textarea>
+          <button (click)="addComment()" [disabled]="!newComment.trim()" class="submit-button">
+            <span class="button-icon">💬</span>
+            Add Comment
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    
+   <!-- ================= ACTIVITY HISTORY ================= -->
+  <div class="activities-section">
+
+    <div class="activities-card">
+      <h3 class="section-title">Activity History</h3>
+
+      <div *ngIf="activities.length === 0" class="empty-activities">
+        <span class="empty-icon">🕒</span>
+        <p>No activity recorded yet.</p>
+      </div>
+
+      <div class="activity-timeline" *ngIf="activities.length > 0">
+
+        <div class="activity-item" *ngFor="let a of activities">
+          <div class="activity-dot"></div>
+
+          <div class="activity-body">
+            <div class="activity-header">
+              <span class="activity-action">{{ a.action }}</span>
+              <span class="activity-time">
+                {{ a.performedAt | date:'medium' }}
+              </span>
+            </div>
+
+            <div class="activity-details" *ngIf="a.fieldName">
+              {{ a.fieldName }}:
+              <strong>{{ a.oldValue ?? '—' }}</strong>
+              →
+              <strong>{{ a.newValue ?? '—' }}</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ERROR STATE -->
+  <div class="error-state" *ngIf="!loading && !ticket">
+    <div class="error-icon">⚠️</div>
+    <h3 class="error-title">Ticket Not Found</h3>
+    <p class="error-text">The ticket you're looking for doesn't exist or has been removed.</p>
+  </div>
+</div>

@@ -5,8 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { TicketService } from '../../../core/services/ticket.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TicketStatus } from '../../../core/enums/ticket-status.enum';
-import { ToastrService } from 'ngx-toastr';
-
 
 
 @Component({
@@ -35,8 +33,7 @@ export class TicketDetailsComponent implements OnInit {
     private ticketService: TicketService,
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
-    private auth: AuthService,
-    private toastr: ToastrService
+    private auth: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -205,11 +202,9 @@ export class TicketDetailsComponent implements OnInit {
         next: () => {
           // Update UI immediately
           this.ticket.status = newStatus;
-          this.toastr.success('Status Updated Successfully!');
           console.log('Status updated to', newStatus);
         },
         error: (err) => {
-          this.toastr.error('Invalid Status Update');
           console.error('Failed to update status', err);
         }
       });

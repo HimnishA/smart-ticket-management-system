@@ -232,12 +232,10 @@ export class NewTicketDialogComponent implements OnInit {
       }).subscribe({
         next: (res) => {
           this.loading = false;
-          this.toastr.success('Ticket Created Successfully!');
           this.dialogRef.close(true); // Return true to indicate success
         },
         error: (err) => {
           this.loading = false;
-          this.toastr.success('Ticket Creation Failed');
           const apiError = err?.error;
           if (typeof apiError === 'string') {
             this.errorMessage = apiError;

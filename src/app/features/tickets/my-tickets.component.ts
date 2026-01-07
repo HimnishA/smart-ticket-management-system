@@ -4,8 +4,6 @@ import { Router, RouterModule } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TicketService } from '../../core/services/ticket.service';
 import { NewTicketDialogComponent } from '../../shared/components/new-ticket-dialog.component';
-import { AuthService } from '../../core/services/auth.service';
-
 
 @Component({
   standalone: true,
@@ -20,10 +18,7 @@ import { AuthService } from '../../core/services/auth.service';
             <h1 class="tickets-title">My Tickets</h1>
             <p class="tickets-subtitle">View and manage your ticket requests</p>
           </div>
-          <button
-            *ngIf="isEndUser"
-            class="create-ticket-btn"
-            (click)="openNewTicketDialog()">
+          <button class="create-ticket-btn" (click)="openNewTicketDialog()">
             <span class="btn-icon">➕</span>
             Create New Ticket
           </button>
@@ -447,18 +442,14 @@ export class MyTicketsComponent implements OnInit {
   tickets: any[] = [];
   loading: boolean = true;
 
-  isEndUser = false;
-
   constructor(
     private ticketService: TicketService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private dialog: MatDialog,
-    private authService: AuthService
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.isEndUser = this.authService.isEndUser();
     this.loadTickets();
   }
 

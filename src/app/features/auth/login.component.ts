@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { ToastrService } from 'ngx-toastr';
-
 
 @Component({
   standalone: true,
@@ -350,8 +348,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
-    private router: Router,
-    private toastr: ToastrService
+    private router: Router
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -416,12 +413,10 @@ export class LoginComponent {
       return;
     }
 
-
     this.loading = true;
     this.auth.login(email, password).subscribe({
       next: () => {
         this.loading = false;
-        this.toastr.success('Logged In Succesfully');
         // Navigate based on first role, fallback to tickets
         const roles = this.auth.roles;
         if (roles.includes('SupportManager')) {
@@ -438,8 +433,7 @@ export class LoginComponent {
       },
       error: (err) => {
         this.loading = false;
-        this.toastr.error('Invalid Credentials');
-        // this.toastr.error(err);
+
         // Log for debugging during development
         console.error('Login failed', err);
 

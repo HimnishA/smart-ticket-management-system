@@ -53,14 +53,4 @@ export class AuthService {
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userId');
   }
-
-  //new
-
-  hasRole(role: string): boolean {
-    return this.roles.includes(role);
-  }
-
-  isEndUser(): boolean {
-    return this.hasRole('EndUser');
-  }
 }
