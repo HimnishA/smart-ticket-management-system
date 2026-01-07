@@ -263,10 +263,13 @@ JWT-based authentication
 
 Tokens sent via HTTP interceptor
 
-Angular route guards enforce role access
+Angular route guards enforce role-based access
 
-Backend endpoints secured with [Authorize(Roles = "...")]
+Backend endpoints secured using:
 
+csharp
+Copy code
+[Authorize(Roles = "...")]
 📌 Key Achievements
 Complete ticket lifecycle implementation
 
@@ -278,7 +281,7 @@ Auto-assignment logic
 
 Centralized activity audit trail
 
-Clean, scalable architecture
+Clean and scalable architecture
 
 🚧 Future Enhancements
 Email notifications
@@ -291,3 +294,6 @@ Multi-tenant support
 
 📄 License
 This project was developed as an academic capstone project.
+
+markdown
+Copy code
