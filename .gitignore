@@ -1,0 +1,42 @@
+# =========================
+# Environment / Secrets
+# =========================
+.env
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/appsettings.Production.json
+**/secrets.json
+
+# =========================
+# .NET
+# =========================
+bin/
+obj/
+**/bin/
+**/obj/
+
+# =========================
+# Angular / Frontend
+# =========================
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.angular/
+Frontend/.cache/
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# IDE / OS
+# =========================
+.vs/
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+.DS_Store
+Thumbs.db
