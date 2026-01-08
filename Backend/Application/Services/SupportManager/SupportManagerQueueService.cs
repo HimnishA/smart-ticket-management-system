@@ -36,7 +36,10 @@ public class SupportManagerQueueService : ISupportManagerQueueService
             .Where(t =>
                 t.Status == TicketStatus.Created ||
                 t.Status == TicketStatus.Assigned ||
-                t.Status == TicketStatus.InProgress
+                t.Status == TicketStatus.InProgress ||
+                t.Status == TicketStatus.Resolved ||
+                t.Status == TicketStatus.Reopened
+
             );
 
         // -------------------------

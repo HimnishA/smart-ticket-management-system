@@ -53,7 +53,7 @@ public class TicketService : ITicketService
             .FirstOrDefaultAsync(p => p.Id == dto.PriorityId && p.IsActive)
             ?? throw new BusinessRuleViolationException("Invalid or inactive priority");
 
-        var sla = await ResolveSlaForPriorityAsync(priority.Name);
+        var sla = await ResolveSlaForPriorityAsync(priority.Level);
 
         var ticket = new Ticket
         {
@@ -70,7 +70,7 @@ public class TicketService : ITicketService
         // -------------------------
         // PHASE 4: AUTO ASSIGNMENT
         // -------------------------
-        if (priority.Name is "High" or "Critical")
+        if (priority.Level is 3 or 4)
         {
             var agentId = await _autoAssignmentService.GetAvailableAgentAsync();
 
@@ -181,7 +181,7 @@ public class TicketService : ITicketService
         var oldStatus = ticket.Status;
         ticket.Status = dto.NewStatus;
 
-        // ✅ Lifecycle timestamps (CRITICAL)
+        // Lifecycle timestamps 
         if (dto.NewStatus == TicketStatus.Resolved)
         {
             ticket.ResolvedAt = DateTime.UtcNow;
@@ -191,6 +191,11 @@ public class TicketService : ITicketService
         {
             ticket.ClosedAt = DateTime.UtcNow;
         }
+
+        // if (dto.NewStatus == TicketStatus.Reopened)
+        // {
+        //     ticket.AssignedToUserId = null;
+        // }
 
         _context.TicketActivities.Add(new TicketActivity
         {
@@ -256,6 +261,8 @@ public class TicketService : ITicketService
 
         ticket.Status = TicketStatus.Reopened;
         ticket.ReopenedAt = DateTime.UtcNow;
+
+        ticket.AssignedToUserId = null;
 
         // reset terminal timestamps
         ticket.ResolvedAt = null;
@@ -350,14 +357,14 @@ public class TicketService : ITicketService
     // -------------------------
     // SLA RESOLVER (unchanged)
     // -------------------------
-    private async Task<SLAPolicy> ResolveSlaForPriorityAsync(string priorityName)
+    private async Task<SLAPolicy> ResolveSlaForPriorityAsync(int priorityName)
     {
         var slaName = priorityName switch
         {
-            "Low" => "Low SLA",
-            "Medium" => "Medium SLA",
-            "High" => "High SLA",
-            "Critical" => "Critical SLA",
+            1 => "Low SLA",
+            2 => "Medium SLA",
+            3 => "High SLA",
+            4 => "Critical SLA",
             _ => throw new BusinessRuleViolationException(
                 $"No SLA policy mapped for priority '{priorityName}'")
         };

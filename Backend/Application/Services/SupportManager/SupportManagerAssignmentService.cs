@@ -80,7 +80,8 @@ public class SupportManagerAssignmentService : ISupportManagerAssignmentService
         // -------------------------
         ticket.AssignedToUserId = assignToUserId;
 
-        if (ticket.Status == TicketStatus.Created)
+        if (ticket.Status == TicketStatus.Created||
+            ticket.Status == TicketStatus.Reopened)
             ticket.Status = TicketStatus.Assigned;
 
         ticket.UpdatedAt = DateTime.UtcNow;

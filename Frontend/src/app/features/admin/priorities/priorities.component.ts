@@ -41,11 +41,11 @@ import { AdminService } from '../../../core/services/admin.service';
                 [(ngModel)]="newPriority.level"
                 name="level"
                 class="form-input"
-                placeholder="1, 2, 3..."
+                placeholder="1, 2, 3 & 4"
                 min="1"
                 max="10"
                 required>
-              <small class="form-hint">Higher number = Higher priority</small>
+              <small class="form-hint">Auto assignment on priority level 3 & 4</small>
             </div>
           </div>
           <button type="submit" class="submit-button" [disabled]="loading || !newPriority.name.trim() || !newPriority.level">

@@ -86,7 +86,7 @@ export class TicketDetailsComponent implements OnInit {
           this.loadActivities();
           this.loading = false;
 
-          // 🔥 FORCE UI REFRESH
+          // FORCE UI REFRESH
           this.cdr.detectChanges();
         });
       },
@@ -183,7 +183,9 @@ export class TicketDetailsComponent implements OnInit {
     const transitions: Record<string, string[]> = {
       Assigned: ['InProgress'],
       InProgress: ['Resolved'],
-      Resolved: ['Closed']
+      Resolved: ['Closed'],
+      Reopened: ['Assigned']
+
     };
 
     return transitions[currentStatus] ?? [];

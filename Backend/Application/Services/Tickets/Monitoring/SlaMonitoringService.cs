@@ -21,7 +21,7 @@ public class SlaMonitoringService
 
     public async Task DetectBreachesAsync()
     {
-        // 1️⃣ Load active tickets WITH SLA policy
+        // Load active tickets WITH SLA policy
         var tickets = await _context.Tickets
             .Include(t => t.SLA)
             .Where(t =>
@@ -31,7 +31,7 @@ public class SlaMonitoringService
 
         foreach (var ticket in tickets)
         {
-            // 2️⃣ Evaluate SLA breach using SLA policy
+            //  Evaluate SLA breach using SLA policy
             var isBreached = _slaService.IsSlaBreached(
                 ticket.CreatedAt,
                 ticket.SLA
@@ -40,7 +40,7 @@ public class SlaMonitoringService
             if (!isBreached)
                 continue;
 
-            // 3️⃣ Prevent duplicate SLA breach logs
+            //  Prevent duplicate SLA breach logs
             var alreadyLogged = await _context.TicketActivities.AnyAsync(a =>
                 a.TicketId == ticket.Id &&
                 a.Action == "SLA_BREACHED"
@@ -49,7 +49,7 @@ public class SlaMonitoringService
             if (alreadyLogged)
                 continue;
 
-            // 4️⃣ Log SLA breach (AUDIT ONLY)
+            //  Log SLA breach (AUDIT ONLY)
             _context.TicketActivities.Add(new TicketActivity
             {
                 TicketId = ticket.Id,
